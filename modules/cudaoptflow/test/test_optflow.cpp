@@ -337,7 +337,15 @@ CUDA_TEST_P(FarnebackOpticalFlow, Accuracy)
         frame0, frame1, flow, farn->getPyrScale(), farn->getNumLevels(), farn->getWinSize(),
         farn->getNumIters(), farn->getPolyN(), farn->getPolySigma(), farn->getFlags());
 
-    EXPECT_MAT_SIMILAR(flow, d_flow, 0.1);
+    // Relax test limit when the flag is set
+    if (farn->getFlags() & cv::OPTFLOW_FARNEBACK_GAUSSIAN)
+    {
+        EXPECT_MAT_SIMILAR(flow, d_flow, 2e-2);
+    }
+    else
+    {
+        EXPECT_MAT_SIMILAR(flow, d_flow, 1e-4);
+    }
 }
 
 INSTANTIATE_TEST_CASE_P(CUDA_OptFlow, FarnebackOpticalFlow, testing::Combine(
@@ -385,7 +393,7 @@ CUDA_TEST_P(OpticalFlowDual_TVL1, Accuracy)
     cv::cuda::GpuMat d_flow;
     d_alg->calc(loadMat(frame0), loadMat(frame1), d_flow);
 
-    cv::Ptr<cv::DualTVL1OpticalFlow> alg = cv::createOptFlow_DualTVL1();
+    cv::Ptr<cv::optflow::DualTVL1OpticalFlow> alg = cv::optflow::createOptFlow_DualTVL1();
     alg->setMedianFiltering(1);
     alg->setInnerIterations(1);
     alg->setOuterIterations(d_alg->getNumIterations());

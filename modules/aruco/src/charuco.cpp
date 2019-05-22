@@ -345,10 +345,10 @@ static int _selectAndRefineChessboardCorners(InputArray _allCorners, InputArray 
 
     // corner refinement, first convert input image to grey
     Mat grey;
-    if(_image.getMat().type() == CV_8UC3)
-        cvtColor(_image.getMat(), grey, COLOR_BGR2GRAY);
+    if(_image.type() == CV_8UC3)
+        cvtColor(_image, grey, COLOR_BGR2GRAY);
     else
-        _image.getMat().copyTo(grey);
+        _image.copyTo(grey);
 
     const Ptr<DetectorParameters> params = DetectorParameters::create(); // use default params for corner refinement
 
@@ -656,7 +656,7 @@ static bool _arePointsEnoughForPoseEstimation(const vector< Point3f > &points) {
   */
 bool estimatePoseCharucoBoard(InputArray _charucoCorners, InputArray _charucoIds,
                               const Ptr<CharucoBoard> &_board, InputArray _cameraMatrix, InputArray _distCoeffs,
-                              OutputArray _rvec, OutputArray _tvec, bool useExtrinsicGuess) {
+                              InputOutputArray _rvec, InputOutputArray _tvec, bool useExtrinsicGuess) {
 
     CV_Assert((_charucoCorners.getMat().total() == _charucoIds.getMat().total()));
 
@@ -754,10 +754,10 @@ void detectCharucoDiamond(InputArray _image, InputArrayOfArrays _markerCorners,
 
     // convert input image to grey
     Mat grey;
-    if(_image.getMat().type() == CV_8UC3)
-        cvtColor(_image.getMat(), grey, COLOR_BGR2GRAY);
+    if(_image.type() == CV_8UC3)
+        cvtColor(_image, grey, COLOR_BGR2GRAY);
     else
-        _image.getMat().copyTo(grey);
+        _image.copyTo(grey);
 
     // for each of the detected markers, try to find a diamond
     for(unsigned int i = 0; i < _markerIds.total(); i++) {
