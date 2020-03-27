@@ -10,6 +10,8 @@ $ cmake -D OPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules -D BUILD_opencv_<r
 
 - **aruco**: ArUco and ChArUco Markers -- Augmented reality ArUco marker and "ChARUco" markers where ArUco markers embedded inside the white areas of the checker board.
 
+- **alphamat**: Computer Vision based Alpha Matting -- Given an input image and a trimap, generate an alpha matte.
+
 - **bgsegm**: Background segmentation algorithm combining statistical background image estimation and per-pixel Bayesian segmentation.
 
 - **bioinspired**: Biological Vision -- Biologically inspired vision model: minimize noise and luminance variance, transient event segmentation, high dynamic range tone mapping methods.
@@ -22,7 +24,9 @@ $ cmake -D OPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules -D BUILD_opencv_<r
 
 - **datasets**: Datasets Reader -- Code for reading existing computer vision databases and samples of using the readers to train, test and run using that dataset's data.
 
-- **dnn_objdetect**: Object Detection using CNNs -- Implements compact CNN Model for object detection. Trained using Caffe but uses opencv_dnn modeule.
+- **dnn_objdetect**: Object Detection using CNNs -- Implements compact CNN Model for object detection. Trained using Caffe but uses opencv_dnn module.
+
+- **dnn_superres**: Superresolution using CNNs -- Contains four trained convolutional neural networks to upscale images.
 
 - **dnns_easily_fooled**: Subvert DNNs -- This code can use the activations in a network to fool the networks into recognizing something else.
 

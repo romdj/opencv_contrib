@@ -107,12 +107,12 @@
 #include <stdarg.h>
 #include <opencv2/core/hal/hal.hpp>
 
+#include <opencv2/core/utils/tls.hpp>
+
 namespace cv
 {
 namespace xfeatures2d
 {
-
-#ifdef OPENCV_ENABLE_NONFREE
 
 /*!
  SIFT implementation.
@@ -709,7 +709,7 @@ void SIFT_Impl::findScaleSpaceExtrema( const std::vector<Mat>& gauss_pyr, const 
     const int threshold = cvFloor(0.5 * contrastThreshold / nOctaveLayers * 255 * SIFT_FIXPT_SCALE);
 
     keypoints.clear();
-    TLSData<std::vector<KeyPoint> > tls_kpts_struct;
+    TLSDataAccumulator<std::vector<KeyPoint> > tls_kpts_struct;
 
     for( int o = 0; o < nOctaves; o++ )
         for( int i = 1; i <= nOctaveLayers; i++ )
@@ -1145,19 +1145,20 @@ void SIFT_Impl::detectAndCompute(InputArray _image, InputArray _mask,
     }
 
     Mat base = createInitialImage(image, firstOctave < 0, (float)sigma);
-    std::vector<Mat> gpyr, dogpyr;
+    std::vector<Mat> gpyr;
     int nOctaves = actualNOctaves > 0 ? actualNOctaves : cvRound(std::log( (double)std::min( base.cols, base.rows ) ) / std::log(2.) - 2) - firstOctave;
 
     //double t, tf = getTickFrequency();
     //t = (double)getTickCount();
     buildGaussianPyramid(base, gpyr, nOctaves);
-    buildDoGPyramid(gpyr, dogpyr);
 
     //t = (double)getTickCount() - t;
     //printf("pyramid construction time: %g\n", t*1000./tf);
 
     if( !useProvidedKeypoints )
     {
+        std::vector<Mat> dogpyr;
+        buildDoGPyramid(gpyr, dogpyr);
         //t = (double)getTickCount();
         findScaleSpaceExtrema(gpyr, dogpyr, keypoints);
         KeyPointsFilter::removeDuplicatedSorted( keypoints );
@@ -1198,15 +1199,6 @@ void SIFT_Impl::detectAndCompute(InputArray _image, InputArray _mask,
         //printf("descriptor extraction time: %g\n", t*1000./tf);
     }
 }
-
-#else // ! #ifdef OPENCV_ENABLE_NONFREE
-Ptr<SIFT> SIFT::create( int, int, double, double, double )
-{
-    CV_Error(Error::StsNotImplemented,
-        "This algorithm is patented and is excluded in this configuration; "
-        "Set OPENCV_ENABLE_NONFREE CMake option and rebuild the library");
-}
-#endif
 
 }
 }
